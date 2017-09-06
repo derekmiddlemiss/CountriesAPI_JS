@@ -15,6 +15,8 @@ var app = function(){
   }
 }
 
+//----------------------------------------------------------------------------------
+
 var makeRequest = function( url, callback ) {
   //create a new XMLHttpRequest object
   var request = new XMLHttpRequest();
@@ -26,6 +28,8 @@ var makeRequest = function( url, callback ) {
   request.send();
 }
 
+//----------------------------------------------------------------------------------
+
 var requestComplete = function() {
   if ( this.status !== 200 ) return;
 
@@ -33,8 +37,9 @@ var requestComplete = function() {
   var countries = JSON.parse( jsonString );
   var regions = findUniqueRegions( countries );
   populateRegionSelect( regions, countries );
-  // populateCountrySelect( countries );
 }
+
+//----------------------------------------------------------------------------------
 
 var findUniqueRegions = function( countries ) {
   var uniqueRegions = {};
@@ -46,10 +51,20 @@ var findUniqueRegions = function( countries ) {
 
 }
 
+//----------------------------------------------------------------------------------
+
 var populateRegionSelect = function( regions, countries ) {
   var select = document.querySelector( '#select-region' );
 
   select.addEventListener( 'change', function(){ populateCountrySelect( countries, select.value )})
+
+  
+  while( select.firstChild ) { select.removeChild( select.firstChild )}
+
+  var option = document.createElement( 'option' );
+  option.innerText = "Choose a region";
+  select.appendChild( option );
+  select.options[0].disabled = true;
 
   regions.forEach( function( region, index ) {
 
@@ -62,9 +77,18 @@ var populateRegionSelect = function( regions, countries ) {
 
 }
 
+//----------------------------------------------------------------------------------
+
 var populateCountrySelect = function( countries, region ) {
   var select = document.querySelector( '#select-country' );
   select.addEventListener( 'change', function(){ selectCountry( select.value, filteredCountries ) } );
+
+  while( select.firstChild ) { select.removeChild( select.firstChild )}
+  
+  var option = document.createElement( 'option' );
+  option.innerText = "Choose a country";
+  select.appendChild( option );
+  select.options[0].disabled = true;
 
   var filteredCountries = countries.filter( function( country){
     return ( country.region === region );
@@ -80,6 +104,8 @@ var populateCountrySelect = function( countries, region ) {
   } );
 
 }
+
+//----------------------------------------------------------------------------------
 
 var selectCountry = function( index, countries ) {
   console.log( index );
